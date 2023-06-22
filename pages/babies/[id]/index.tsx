@@ -59,7 +59,7 @@ export default function BabyOverviewPage({}) {
 
   useEffect(() => {
     getData();
-  }, [router.query]);
+  }, [router.query?.id]);
 
   const getData = async () => {
     if (router?.query?.id !== undefined) {
