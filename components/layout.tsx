@@ -201,7 +201,7 @@ export default function RootLayout({
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
-                    supabase.auth.signOut().then((_) => push('/login'));
+                    supabase.auth.signOut().then((_) => router.push('/login'));
                   }}
                 >
                   <Typography textAlign="center">Log out</Typography>
