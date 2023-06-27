@@ -17,6 +17,7 @@ import {
   Box,
   Button,
   Card,
+  Modal,
   Paper,
   Skeleton,
   SpeedDial,
@@ -28,21 +29,68 @@ import RootLayout from '@/components/layout';
 import Link from 'next/link';
 import { BabyOverview } from '@/components/babyOverview';
 import { dir } from 'console';
-import { Measures } from '@/types/Measure';
+import { MeasureTypes, Measures } from '@/types/Measure';
+import { MeasureEditor } from '@/components/measureEditor';
 
 export default function BabyOverviewPage({}) {
   const actions = [
-    { icon: <MonitorWeightIcon />, text: Measures.Weight, action: () => {} },
-    { icon: <RestaurantMenuIcon />, text: Measures.Feeding, action: () => {} },
-    { icon: <ThermostatIcon />, text: Measures.Temperature, action: () => {} },
+    {
+      icon: <MonitorWeightIcon />,
+      text: Measures.Weight,
+      action: () => {
+        setEditorData({
+          showEditor: true,
+          measureType: Measures.Weight as MeasureTypes,
+        });
+      },
+    },
+    {
+      icon: <RestaurantMenuIcon />,
+      text: Measures.Feeding,
+      action: () => {
+        setEditorData({
+          showEditor: true,
+          measureType: Measures.Feeding as MeasureTypes,
+        });
+      },
+    },
+    {
+      icon: <ThermostatIcon />,
+      text: Measures.Temperature,
+      action: () => {
+        setEditorData({
+          showEditor: true,
+          measureType: Measures.Temperature as MeasureTypes,
+        });
+      },
+    },
     {
       icon: <BabyChangingStationIcon />,
       text: Measures.Diaper,
-      action: () => {},
+      action: () => {
+        setEditorData({
+          showEditor: true,
+          measureType: Measures.Diaper as MeasureTypes,
+        });
+      },
     },
-    { icon: <BoltIcon />, text: Measures.Vitamines, action: () => {} },
+    {
+      icon: <BoltIcon />,
+      text: Measures.Vitamines,
+      action: () => {
+        setEditorData({
+          showEditor: true,
+          measureType: Measures.Vitamines as MeasureTypes,
+        });
+      },
+    },
   ];
   const router = useRouter();
+  const [editorData, setEditorData] = React.useState<{
+    showEditor: boolean;
+    measureType?: MeasureTypes;
+  }>({ showEditor: false });
+
   const { data, loading, refresh, setQuery, query } = useBabyById();
 
   const changeDate = (direction: 1 | -1) => {
@@ -69,6 +117,10 @@ export default function BabyOverviewPage({}) {
       });
       await refresh();
     }
+  };
+
+  const handleClose = () => {
+    setEditorData({ showEditor: false });
   };
 
   return (
@@ -110,6 +162,17 @@ export default function BabyOverviewPage({}) {
           />
         ))}
       </SpeedDial>
+      <Modal
+        open={editorData.showEditor}
+        onClose={handleClose}
+        disableEnforceFocus={false}
+      >
+        <MeasureEditor
+          babyId={data?.baby?.id}
+          measureType={editorData.measureType}
+          onClose={handleClose}
+        />
+      </Modal>
     </>
   );
 }

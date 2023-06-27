@@ -6,7 +6,13 @@ export interface Measure {
     Measure: string | null
     Value: number | null
 }
-
+export type MeasureTypes =
+    "Vitamines"
+    | "Weight"
+    | "Diaper"
+    | "Feeding"
+    | "Temperature"
+    ;
 export const Measures = {
     "Vitamines": "Vitamines",
     "Weight": "Weight",

@@ -19,14 +19,12 @@ export default function AuthForm() {
   return (
     <Auth
       supabaseClient={supabase}
-      view="sign_in"
       appearance={{ theme: ThemeSupa }}
       theme="light"
-      providerScopes={{ azure: 'openid email offline_access profile' }}
       showLinks={true}
-      providers={['azure']}
       redirectTo={`${process.env.NEXT_PUBLIC_APPURL}/auth/callback`}
       magicLink={true}
+      providers={[]}
     />
   );
 }

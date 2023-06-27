@@ -2,7 +2,7 @@ import { supabase } from "@/lib/supabaseClient";
 import React from "react";
 
 export default function useUserData() {
-    const [userData, setUserData] = React.useState<{ email?: string, initials?: string } | undefined>(undefined);
+    const [userData, setUserData] = React.useState<{ email?: string, initials?: string, id: string } | undefined>(undefined);
 
     const loadUserData = async () => {
         const user = await supabase.auth.getUser();
@@ -10,7 +10,8 @@ export default function useUserData() {
         if (user?.error == null) {
             setUserData({
                 email: user?.data?.user?.email,
-                initials: user.data.user.email?.at(0)
+                initials: user.data.user.email?.at(0),
+                id: user.data.user.id
             })
         } else {
             setUserData(undefined);
