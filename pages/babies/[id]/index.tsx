@@ -14,6 +14,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import {
+  Backdrop,
   Box,
   Button,
   Card,
@@ -33,6 +34,7 @@ import { dir } from 'console';
 import { MeasureTypes, Measures } from '@/types/Measure';
 import { MeasureEditor } from '@/components/measureEditor';
 import { HotTub } from '@mui/icons-material';
+import { RealtimeChannel } from '@supabase/realtime-js';
 
 export default function BabyOverviewPage({}) {
   const actions = [
@@ -98,6 +100,7 @@ export default function BabyOverviewPage({}) {
     },
   ];
   const router = useRouter();
+  const [speedDialOpen, setSpeedDialOpen] = React.useState(false);
   const [editorData, setEditorData] = React.useState<{
     showEditor: boolean;
     measureType?: MeasureTypes;
@@ -115,9 +118,27 @@ export default function BabyOverviewPage({}) {
     );
   };
 
+  const registerForUpdates: () => () => void = () => {
+    const subscription = supabase
+      .channel('custom-insert-channel')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'Measure' },
+        async (payload) => {
+          await getData(router.query);
+        }
+      )
+      .subscribe();
+    return () => subscription?.unsubscribe?.();
+  };
+
   useEffect(() => {
     getData(router.query);
   }, [router.query]);
+
+  useEffect(() => {
+    return registerForUpdates();
+  }, []);
 
   const getData = async (query: { id?: string; date?: string }) => {
     if (query.date === 'null') {
@@ -146,7 +167,13 @@ export default function BabyOverviewPage({}) {
         </Button>
       </Box>
       <Box>
-        <Grid container spacing={1} alignContent={'center'} width={'100%'}>
+        <Grid
+          container
+          spacing={1}
+          justifyContent={'center'}
+          alignContent={'space-between'}
+          width={'100%'}
+        >
           <Grid xs={2}>
             <Button
               color="info"
@@ -156,13 +183,13 @@ export default function BabyOverviewPage({}) {
               <ChevronLeftIcon />
             </Button>
           </Grid>
-          <Grid xs={4}>
+          <Grid xs={4} justifyContent={'center'}>
             {' '}
             <Typography textAlign={'center'}>
               {query?.date?.toFormat('dd-MM-yyyy') ?? 'nop'}
             </Typography>
           </Grid>
-          <Grid xs={2} justifyContent={'right'}>
+          <Grid xs={2}>
             <Button
               color="info"
               variant="contained"
@@ -182,10 +209,14 @@ export default function BabyOverviewPage({}) {
           <BabyOverview.Tabs data={data} />
         </>
       )}
+      <Backdrop open={speedDialOpen} />
+
       <SpeedDial
         ariaLabel="SpeedDial"
         sx={{ position: 'fixed', bottom: 16, right: 16 }}
         icon={<SpeedDialIcon />}
+        onOpen={() => setSpeedDialOpen(true)}
+        onClose={() => setSpeedDialOpen(false)}
       >
         {actions.map((action) => (
           <SpeedDialAction

@@ -6,7 +6,7 @@ import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import { Typography } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 import { DiaperTypes, Measure, Measures } from '@/types/Measure';
 import { supabase } from '@/lib/supabaseClient';
 import { DateTime } from 'luxon';
@@ -84,8 +84,23 @@ export function HistoryTab({ babyId }: { babyId?: number }) {
 
   React.useEffect(() => {
     getData();
+    return registerForUpdates();
   }, []);
 
+  const registerForUpdates: () => () => void = () => {
+    const Measure = supabase
+      .channel('custom-insert-channel')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'Measure' },
+        async (payload) => {
+          setData(undefined);
+          await getData();
+        }
+      )
+      .subscribe();
+    return () => Measure.unsubscribe();
+  };
   const getData = async () => {
     const measures = await supabase
       .from('Measure')
@@ -97,7 +112,7 @@ export function HistoryTab({ babyId }: { babyId?: number }) {
   return (
     <>
       {data === undefined ? (
-        <></>
+        <Skeleton variant="rectangular" width="100%" height={118} />
       ) : (
         <Timeline position="alternate">
           {data?.map((e) => (
