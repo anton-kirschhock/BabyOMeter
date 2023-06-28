@@ -6,21 +6,24 @@ export interface Measure {
     Measure: string | null
     Value: number | null
 }
+
+export const Measures = {
+    "Vitamines": "Vitamines",
+    "Weight": "Weight",
+    "Diaper": "Diaper",
+    "Feeding": "Feeding",
+    "Temperature": "Temperature",
+    "Bath": "Bath"
+}
+
 export type MeasureTypes =
     "Vitamines"
     | "Weight"
     | "Diaper"
     | "Feeding"
     | "Temperature"
+    | "Bath"
     ;
-export const Measures = {
-    "Vitamines": "Vitamines",
-    "Weight": "Weight",
-    "Diaper": "Diaper",
-    "Feeding": "Feeding",
-    "Temperature": "Temperature"
-}
-
 export const DiaperTypes = [
     'Empty',
     'Wet',

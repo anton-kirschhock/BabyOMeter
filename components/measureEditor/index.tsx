@@ -35,7 +35,16 @@ export function MeasureEditor({
   const measureSubForms = {
     Vitamines: (
       <>
-        <CheckBox color="success" />
+        <Typography>
+          All OK <CheckBox color="success" />
+        </Typography>
+      </>
+    ),
+    Bath: (
+      <>
+        <Typography>
+          All OK <CheckBox color="success" />
+        </Typography>
       </>
     ),
     Weight: (
@@ -124,7 +133,7 @@ export function MeasureEditor({
       </>
     ),
   };
-  const [date, setDate] = React.useState<DateTime | null>(null);
+  const [date, setDate] = React.useState<DateTime | null>(DateTime.now());
   const { userData } = useUserData();
   const onSave = async () => {
     const { data, error } = await supabase.from('Measure').insert([
@@ -137,13 +146,16 @@ export function MeasureEditor({
       } as Measure,
     ]);
 
-    if (!error) {
+    if (error) {
+      alert(error.message);
+    } else {
       onClose();
     }
   };
   React.useEffect(() => {
     switch (measureType) {
       case Measures.Vitamines:
+      case Measures.Bath:
         setValue(1);
         break;
       case Measures.Temperature:

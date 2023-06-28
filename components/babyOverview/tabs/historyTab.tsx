@@ -16,6 +16,7 @@ import BabyChangingStationIcon from '@mui/icons-material/BabyChangingStation';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 import BoltIcon from '@mui/icons-material/Bolt';
+import { HotTub } from '@mui/icons-material';
 
 export function TimelineEntry({ data }: { data: Measure }) {
   const getValue = (value: number, measureType: string) => {
@@ -47,6 +48,8 @@ export function TimelineEntry({ data }: { data: Measure }) {
         return <RestaurantMenuIcon />;
       case Measures.Vitamines:
         return <BoltIcon />;
+      case Measures.Bath:
+        return <HotTub />;
     }
   };
   return (
@@ -78,6 +81,7 @@ export function TimelineEntry({ data }: { data: Measure }) {
 
 export function HistoryTab({ babyId }: { babyId?: number }) {
   const [data, setData] = React.useState<Measure[] | undefined>();
+
   React.useEffect(() => {
     getData();
   }, []);

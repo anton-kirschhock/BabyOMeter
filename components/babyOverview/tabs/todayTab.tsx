@@ -12,8 +12,10 @@ import BlenderIcon from '@mui/icons-material/Blender';
 import { Measure, Measures } from '@/types/Measure';
 import React, { useEffect } from 'react';
 import { DateTime } from 'luxon';
+import { Bolt, HotTub } from '@mui/icons-material';
 export interface TabData {
   hadVitamines: boolean;
+  hadBath: boolean;
   lastTemperature?: number;
   totalFeeding?: number;
   weight?: number;
@@ -21,6 +23,7 @@ export interface TabData {
 export default function TodayTab({ data }: { data?: Measure[] }) {
   const [tabData, setTabData] = React.useState<TabData>({
     hadVitamines: false,
+    hadBath: false,
     lastTemperature: undefined,
     totalFeeding: undefined,
     weight: undefined,
@@ -34,6 +37,9 @@ export default function TodayTab({ data }: { data?: Measure[] }) {
     const d = {
       hadVitamines:
         data?.some((e) => e.Measure === Measures.Vitamines && e.Value === 1) ??
+        false,
+      hadBath:
+        data?.some((e) => e.Measure === Measures.Bath && e.Value === 1) ??
         false,
       totalFeeding: 0,
       lastTemperature:
@@ -69,12 +75,24 @@ export default function TodayTab({ data }: { data?: Measure[] }) {
       <ListItem>
         <ListItemAvatar>
           <Avatar sx={{ bgcolor: tabData.hadVitamines ? 'green' : 'red' }}>
-            <BlenderIcon />
+            <Bolt />
           </Avatar>
         </ListItemAvatar>
         <ListItemText
           primary="Vitamines"
           secondary={tabData.hadVitamines ? 'Yes' : 'No'}
+        />
+      </ListItem>
+
+      <ListItem>
+        <ListItemAvatar>
+          <Avatar sx={{ bgcolor: tabData.hadBath ? 'green' : 'red' }}>
+            <HotTub />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary="Bath"
+          secondary={tabData.hadBath ? 'Yes' : 'No'}
         />
       </ListItem>
 

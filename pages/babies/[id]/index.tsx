@@ -32,6 +32,7 @@ import { BabyOverview } from '@/components/babyOverview';
 import { dir } from 'console';
 import { MeasureTypes, Measures } from '@/types/Measure';
 import { MeasureEditor } from '@/components/measureEditor';
+import { HotTub } from '@mui/icons-material';
 
 export default function BabyOverviewPage({}) {
   const actions = [
@@ -82,6 +83,16 @@ export default function BabyOverviewPage({}) {
         setEditorData({
           showEditor: true,
           measureType: Measures.Vitamines as MeasureTypes,
+        });
+      },
+    },
+    {
+      icon: <HotTub />,
+      text: Measures.Bath,
+      action: () => {
+        setEditorData({
+          showEditor: true,
+          measureType: Measures.Bath as MeasureTypes,
         });
       },
     },
