@@ -17,6 +17,7 @@ import {
   Box,
   Button,
   Card,
+  Grid,
   Modal,
   Paper,
   Skeleton,
@@ -95,27 +96,30 @@ export default function BabyOverviewPage({}) {
 
   const changeDate = (direction: 1 | -1) => {
     const oldDate =
-      query?.date === undefined || query == null
-        ? DateTime.utc()
-        : DateTime.fromISO(query?.date);
+      query?.date === undefined || query == null ? DateTime.utc() : query.date;
     router.push(
       `/babies/${query?.id}?date=${oldDate
         .plus(Duration.fromObject({ day: direction }))
-        .toISO()}`
+        .toFormat('yyyy-MM-dd')}`
     );
   };
 
   useEffect(() => {
-    getData();
-  }, [router.query?.id]);
+    getData(router.query);
+  }, [router.query]);
 
-  const getData = async () => {
-    if (router?.query?.id !== undefined) {
+  const getData = async (query: { id?: string; date?: string }) => {
+    if (query.date === 'null') {
+      query.date = undefined;
+    }
+    if (query?.id !== undefined) {
       setQuery({
-        id: router.query!.id! as string,
-        date: (router.query.date ?? DateTime.utc().toISODate()) as string,
+        id: query!.id! as string,
+        date:
+          query.date === undefined
+            ? DateTime.utc().startOf('day')
+            : DateTime.fromFormat(query.date, 'yyyy-MM-dd'),
       });
-      await refresh();
     }
   };
 
@@ -131,13 +135,32 @@ export default function BabyOverviewPage({}) {
         </Button>
       </Box>
       <Box>
-        <Button color="info" variant="contained" onClick={() => changeDate(-1)}>
-          <ChevronLeftIcon />
-        </Button>
-        {query?.date}
-        <Button color="info" variant="contained" onClick={() => changeDate(1)}>
-          <ChevronRightIcon />
-        </Button>
+        <Grid container spacing={1} alignContent={'center'} width={'100%'}>
+          <Grid xs={2}>
+            <Button
+              color="info"
+              variant="contained"
+              onClick={() => changeDate(-1)}
+            >
+              <ChevronLeftIcon />
+            </Button>
+          </Grid>
+          <Grid xs={4}>
+            {' '}
+            <Typography textAlign={'center'}>
+              {query?.date?.toFormat('dd-MM-yyyy') ?? 'nop'}
+            </Typography>
+          </Grid>
+          <Grid xs={2} justifyContent={'right'}>
+            <Button
+              color="info"
+              variant="contained"
+              onClick={() => changeDate(1)}
+            >
+              <ChevronRightIcon />
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
 
       {loading ? (
@@ -150,13 +173,14 @@ export default function BabyOverviewPage({}) {
       )}
       <SpeedDial
         ariaLabel="SpeedDial"
-        sx={{ position: 'absolute', bottom: 16, right: 16 }}
+        sx={{ position: 'fixed', bottom: 16, right: 16 }}
         icon={<SpeedDialIcon />}
       >
         {actions.map((action) => (
           <SpeedDialAction
             key={action.text}
             icon={action.icon}
+            tooltipOpen
             tooltipTitle={action.text}
             onClick={action.action}
           />

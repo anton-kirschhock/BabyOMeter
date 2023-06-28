@@ -124,7 +124,7 @@ export function MeasureEditor({
       </>
     ),
   };
-  const [date, setDate] = React.useState<DateTime | undefined>();
+  const [date, setDate] = React.useState<DateTime | null>(null);
   const { userData } = useUserData();
   const onSave = async () => {
     const { data, error } = await supabase.from('Measure').insert([
@@ -162,7 +162,7 @@ export function MeasureEditor({
         top: '25%',
         left: '50%',
         transform: 'translate(-50%, -25%)',
-        width: 600,
+        width: '90%',
         bgcolor: 'background.paper',
         p: 4,
       }}
@@ -175,7 +175,7 @@ export function MeasureEditor({
             value={date}
             ampm={false}
             sx={{ width: '100%' }}
-            onChange={(v) => setDate(v ?? undefined)}
+            onChange={(v) => setDate(v ?? null)}
           />
         </Container>
 

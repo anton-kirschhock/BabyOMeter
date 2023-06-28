@@ -13,7 +13,7 @@ export type BabyByIdViewModel = {
 
 type BabyByIdQuery = {
     id: string;
-    date: string;
+    date: DateTime;
 } | undefined;
 export default function useBabyById(): DataHookResponse<BabyByIdViewModel, BabyByIdQuery> {
 
@@ -22,9 +22,12 @@ export default function useBabyById(): DataHookResponse<BabyByIdViewModel, BabyB
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const refresh = async () => {
+        if (query?.id === undefined) {
+            return;
+        }
         setLoading(true);
         await delayAsync(1000);
-        const todayDate = DateTime.fromISO(query?.date ?? DateTime.utc().toISODate() as string).startOf('day');
+        const todayDate = query.date.startOf('day');
         const res = await supabase.from("Babies").select("*").eq("id", query?.id);
         const measures = await supabase.from("Measure")
             .select("*")
@@ -35,6 +38,10 @@ export default function useBabyById(): DataHookResponse<BabyByIdViewModel, BabyB
         setData({ baby: res.data?.[0] as Baby, measures: measures.data as Measure[] })
         setLoading(false);
     };
+
+    React.useEffect(() => {
+        refresh();
+    }, [query])
 
     return {
         data,
