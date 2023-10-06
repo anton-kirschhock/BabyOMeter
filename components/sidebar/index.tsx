@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Database } from "@/types/supabase";
-import MyFamilySection from "./my-family-section";
+import MyHouseholdSection from "./my-household-section";
 
 export default async function Sidebar({}) {
   const headersList = headers();
@@ -31,7 +31,7 @@ export default async function Sidebar({}) {
                 isActive={pathname === "/"}
                 href="/"
               />
-              <MyFamilySection />
+              <MyHouseholdSection />
             </div>
           </div>
         </div>

@@ -6,28 +6,28 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase";
 import { cookies } from "next/headers";
 
-export default async function MyFamilySection() {
+export default async function MyHouseholdSection() {
   const headersList = headers();
   const pathname = headersList.get("x-pathname");
   const supabase = createServerComponentClient<Database>({ cookies });
-  const families = await supabase.from("Families").select();
+  const households = await supabase.from("Households").select();
   return (
-    <SidebarMenu title={"Your Families"}>
-      {families?.data?.map((e) => (
+    <SidebarMenu title={"Your households"}>
+      {households?.data?.map((e) => (
         <SidebarItem
           key={e.id}
           title={e.name}
           icon={<MdGroup />}
-          isActive={pathname?.startsWith(`/families/${e.id}`)}
-          href={`/families/${e.id}`}
+          isActive={pathname?.startsWith(`/households/${e.id}`)}
+          href={`/households/${e.id}`}
         />
       ))}
       <SidebarItem
-        title="Add a family"
-        color="success"
+        title="Add a household"
+        color="green"
         icon={<MdAdd />}
-        isActive={pathname === "/families/add"}
-        href="/families/add"
+        isActive={pathname === "/households/add"}
+        href="/households/add"
       />
     </SidebarMenu>
   );

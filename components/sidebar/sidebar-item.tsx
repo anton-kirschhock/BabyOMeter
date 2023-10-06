@@ -6,7 +6,7 @@ interface Props {
   icon: React.ReactNode;
   isActive?: boolean;
   href?: string;
-  color?: "success" | "default" | "primary" | "white";
+  color?: "green" | "default" | "primary" | "white";
 }
 
 export const SidebarItem = ({
@@ -14,24 +14,22 @@ export const SidebarItem = ({
   title,
   isActive,
   href = "",
-  color,
+  color = "white",
 }: Props) => {
   return (
     <NextLink
       href={href}
-      className="text-default-900 active:bg-none max-w-full"
+      className={[
+        " max-w-full",
+        isActive
+          ? "bg-primary-100 [&_svg_path]:fill-primary-500"
+          : `bg-${color}-500 hover:bg-${color}-100`,
+        "flex gap-2 w-full min-h-[44px] h-full items-center px-3.5 rounded-xl cursor-pointer transition-all duration-150 active:scale-[0.98]",
+      ]
+        .filter((e) => e !== undefined)
+        .join(" ")}
     >
-      <div
-        className={[
-          isActive
-            ? "bg-primary-100 [&_svg_path]:fill-primary-500"
-            : "hover:bg-default-100",
-          "flex gap-2 w-full min-h-[44px] h-full items-center px-3.5 rounded-xl cursor-pointer transition-all duration-150 active:scale-[0.98]",
-          color ? `bg-${color}` : undefined,
-        ]
-          .filter((e) => e !== undefined)
-          .join(" ")}
-      >
+      <div>
         {icon}
         <span className="text-default-900">{title}</span>
       </div>
